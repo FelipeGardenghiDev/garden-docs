@@ -1,0 +1,8 @@
+{
+  "appId": "com.gardenghi.gardendocs",
+  "appName": "Garden Docs",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}
