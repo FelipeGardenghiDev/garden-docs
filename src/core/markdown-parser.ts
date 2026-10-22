@@ -1,7 +1,14 @@
 /**
  * Safe, zero-dependency Markdown parser for Garden Docs.
- * Translates standard Markdown into styled HTML.
+ * Translates standard Markdown into styled HTML, including GFM tables.
  */
+
+export function generateMarkdownTable(headers: string[], rows: string[][]): string {
+  const headerLine = `| ${headers.join(' | ')} |`;
+  const separatorLine = `| ${headers.map(() => '---').join(' | ')} |`;
+  const rowLines = rows.map((r) => `| ${r.join(' | ')} |`).join('\n');
+  return `\n${headerLine}\n${separatorLine}\n${rowLines}\n`;
+}
 
 export function parseMarkdown(md: string): string {
   if (!md) return '';
@@ -33,6 +40,62 @@ export function parseMarkdown(md: string): string {
     if (inCodeBlock) {
       codeBlockLines.push(line);
       continue;
+    }
+
+    // Markdown Table Detection (starts and ends with '|', second line is delimiter row)
+    if (
+      line.trim().startsWith('|') &&
+      line.trim().endsWith('|') &&
+      i + 1 < lines.length &&
+      lines[i + 1].includes('|') &&
+      lines[i + 1].includes('-')
+    ) {
+      const tableLines: string[] = [];
+      while (i < lines.length && lines[i].trim().startsWith('|') && lines[i].trim().endsWith('|')) {
+        tableLines.push(lines[i].trim());
+        i++;
+      }
+      i--; // adjust loop counter
+
+      if (tableLines.length >= 2) {
+        const parseRow = (rowStr: string) =>
+          rowStr
+            .replace(/^\|/, '')
+            .replace(/\|$/, '')
+            .split('|')
+            .map((c) => c.trim());
+
+        const headers = parseRow(tableLines[0]);
+        const alignments = parseRow(tableLines[1]).map((align) => {
+          if (align.startsWith(':') && align.endsWith(':')) return 'text-center';
+          if (align.endsWith(':')) return 'text-right';
+          return 'text-left';
+        });
+
+        const rows = tableLines.slice(2).map(parseRow);
+
+        let tableHtml = `<div class="overflow-x-auto my-4 rounded-xl border border-zinc-800"><table class="w-full text-xs md:text-sm text-zinc-200">`;
+        tableHtml += `<thead class="bg-zinc-900 border-b border-zinc-800 text-zinc-100 font-semibold"><tr>`;
+        headers.forEach((h, hIdx) => {
+          const alignClass = alignments[hIdx] || 'text-left';
+          tableHtml += `<th class="px-4 py-2.5 ${alignClass}">${parseInline(h)}</th>`;
+        });
+        tableHtml += `</tr></thead>`;
+
+        tableHtml += `<tbody class="divide-y divide-zinc-800/60">`;
+        rows.forEach((r) => {
+          tableHtml += `<tr class="hover:bg-zinc-800/40">`;
+          r.forEach((cell, cIdx) => {
+            const alignClass = alignments[cIdx] || 'text-left';
+            tableHtml += `<td class="px-4 py-2 ${alignClass}">${parseInline(cell)}</td>`;
+          });
+          tableHtml += `</tr>`;
+        });
+        tableHtml += `</tbody></table></div>`;
+
+        htmlLines.push(tableHtml);
+        continue;
+      }
     }
 
     // Headings

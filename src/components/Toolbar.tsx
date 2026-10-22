@@ -9,7 +9,8 @@ import {
   List,
   CheckSquare,
   Code,
-  Minus
+  Minus,
+  Table
 } from 'lucide-react';
 
 interface ToolbarProps {
@@ -21,7 +22,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ onInsert }) => {
     <div className="flex flex-wrap items-center gap-1 p-2 bg-zinc-900 border-b border-zinc-800 text-zinc-300">
       <button
         onClick={() => onInsert('**', '**')}
-        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition"
+        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition cursor-pointer"
         title="Negrito (**texto**)"
       >
         <Bold className="w-4 h-4" />
@@ -29,7 +30,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ onInsert }) => {
 
       <button
         onClick={() => onInsert('*', '*')}
-        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition"
+        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition cursor-pointer"
         title="Itálico (*texto*)"
       >
         <Italic className="w-4 h-4" />
@@ -39,7 +40,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ onInsert }) => {
 
       <button
         onClick={() => onInsert('# ')}
-        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition"
+        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition cursor-pointer"
         title="Título 1 (# Título)"
       >
         <Heading1 className="w-4 h-4" />
@@ -47,7 +48,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ onInsert }) => {
 
       <button
         onClick={() => onInsert('## ')}
-        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition"
+        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition cursor-pointer"
         title="Título 2 (## Título)"
       >
         <Heading2 className="w-4 h-4" />
@@ -55,7 +56,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ onInsert }) => {
 
       <button
         onClick={() => onInsert('### ')}
-        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition"
+        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition cursor-pointer"
         title="Título 3 (### Título)"
       >
         <Heading3 className="w-4 h-4" />
@@ -65,7 +66,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ onInsert }) => {
 
       <button
         onClick={() => onInsert('> ')}
-        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition"
+        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition cursor-pointer"
         title="Citação (> citação)"
       >
         <Quote className="w-4 h-4" />
@@ -73,7 +74,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ onInsert }) => {
 
       <button
         onClick={() => onInsert('- ')}
-        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition"
+        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition cursor-pointer"
         title="Lista (- item)"
       >
         <List className="w-4 h-4" />
@@ -81,7 +82,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ onInsert }) => {
 
       <button
         onClick={() => onInsert('- [ ] ')}
-        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition"
+        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition cursor-pointer"
         title="Checklist (- [ ] tarefa)"
       >
         <CheckSquare className="w-4 h-4" />
@@ -89,15 +90,27 @@ export const Toolbar: React.FC<ToolbarProps> = ({ onInsert }) => {
 
       <button
         onClick={() => onInsert('```\n', '\n```')}
-        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition"
+        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition cursor-pointer"
         title="Bloco de Código"
       >
         <Code className="w-4 h-4" />
       </button>
 
       <button
+        onClick={() =>
+          onInsert(
+            '\n| Coluna 1 | Coluna 2 | Coluna 3 |\n| :--- | :---: | ---: |\n| Item 1 | Valor A | 100 |\n| Item 2 | Valor B | 250 |\n'
+          )
+        }
+        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition cursor-pointer text-emerald-400"
+        title="Tabela Markdown (| Col 1 | Col 2 |)"
+      >
+        <Table className="w-4 h-4" />
+      </button>
+
+      <button
         onClick={() => onInsert('\n---\n')}
-        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition"
+        className="p-1.5 rounded hover:bg-zinc-800 hover:text-white transition cursor-pointer"
         title="Linha Divisória (---)"
       >
         <Minus className="w-4 h-4" />

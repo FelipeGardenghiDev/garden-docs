@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseMarkdown, computeStats } from '../src/core/markdown-parser';
+import { parseMarkdown, computeStats, generateMarkdownTable } from '../src/core/markdown-parser';
 
 describe('Garden Docs - Markdown Parser Engine', () => {
   it('parses headings into proper HTML tags', () => {
@@ -32,6 +32,31 @@ describe('Garden Docs - Markdown Parser Engine', () => {
     expect(html).toContain('Note quote</blockquote>');
     expect(html).toContain('<li class="ml-6 list-disc');
     expect(html).toContain('Item 1</li>');
+  });
+
+  it('parses GitHub Flavored Markdown tables with alignments', () => {
+    const tableMd = `
+| Nome | Preço | Status |
+| :--- | :---: | ---: |
+| Item A | R$ 50 | Ativo |
+| Item B | R$ 120 | Pendente |
+`.trim();
+
+    const html = parseMarkdown(tableMd);
+    expect(html).toContain('<table');
+    expect(html).toContain('<thead');
+    expect(html).toContain('<tbody');
+    expect(html).toContain('Nome');
+    expect(html).toContain('Item A');
+    expect(html).toContain('text-center');
+    expect(html).toContain('text-right');
+  });
+
+  it('generates formatted markdown table template', () => {
+    const generated = generateMarkdownTable(['A', 'B'], [['1', '2']]);
+    expect(generated).toContain('| A | B |');
+    expect(generated).toContain('| --- | --- |');
+    expect(generated).toContain('| 1 | 2 |');
   });
 
   it('computes accurate word, character counts and reading time', () => {
